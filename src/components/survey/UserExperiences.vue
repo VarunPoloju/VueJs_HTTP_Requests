@@ -6,7 +6,9 @@
         <base-button @click="loadExperiences">Load Submitted Experiences</base-button>
       </div>
       <p v-if="isLoading">Loading...</p>
-      <ul v-else>
+      <!-- not loading and dont have results or results length ==0  -->
+      <p v-else-if="!isLoading && (!results || results.length ===0)">No data found, start adding some experiences.</p>
+      <ul v-else-if="!isLoading && results && results.length > 0">
         <!-- if its not loading show the data -->
         <survey-result
           v-for="result in results"
