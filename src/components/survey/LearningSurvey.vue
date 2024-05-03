@@ -29,6 +29,7 @@
         <p
           v-if="invalidInput"
         >One or more input fields are invalid. Please check your provided data.</p>
+        <p v-if="error">{{error}}</p>
         <div>
           <base-button>Submit</base-button>
         </div>
@@ -38,7 +39,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 
 export default {
   data() {
@@ -46,6 +47,7 @@ export default {
       enteredName: '',
       chosenRating: null,
       invalidInput: false,
+      error : null
     };
   },
   methods: {
@@ -55,21 +57,33 @@ export default {
         return;
       }
       this.invalidInput = false;
-      // fetch('https://vue-http-demo-c3177-default-rtdb.firebaseio.com/surveys.json', {
-      //   method : 'POST',
-      //   headers : {
-      //     'Content-Type' : 'application/json'
-      //   },
-      //   body : JSON.stringify({
-      //     name : this.enteredName,
-      //     rating : this.chosenRating
-      //   }),
-      // })
-
-      axios.post('https://vue-http-demo-c3177-default-rtdb.firebaseio.com/surveys.json' , {
-        name : this.enteredName,
-        rating : this.chosenRating
+      this.error = null
+      fetch('https://vue-http-demo-c3177-default-rtdb.firebaseio.com/surveys.json', {
+        method : 'POST',
+        headers : {
+          'Content-Type' : 'application/json'
+        },
+        body :JSON.stringify({
+          name : this.enteredName,
+          rating : this.chosenRating
+        }),
+      }).then(res => {
+          if(res.ok){
+            // ...
+          }
+          else {
+            throw new Error('Could not save data!')
+          }
       })
+      .catch( error => {
+        console.log(error);
+        this.error = error.message
+      })
+
+      // axios.post('https://vue-http-demo-c3177-default-rtdb.firebaseio.com/surveys.json' , {
+      //   name : this.enteredName,
+      //   rating : this.chosenRating
+      // })
 
       this.enteredName = '';
       this.chosenRating = null;
